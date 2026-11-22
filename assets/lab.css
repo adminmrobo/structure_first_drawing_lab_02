@@ -39,7 +39,7 @@ nav.top .links a:hover{color:var(--text);background:var(--panel2)}
 .cover{margin:18px auto 0;max-width:1080px;padding:0 18px}
 .cover .frame{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--rule);
   background:radial-gradient(ellipse at 75% 20%,rgba(15,143,132,.12),transparent 55%),radial-gradient(ellipse at 15% 85%,rgba(232,115,26,.08),transparent 50%),linear-gradient(160deg,#eef3f8,#fff)}
-.cover .frame img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover .frame img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
 .cover svg.grid{position:absolute;inset:0;width:100%;height:100%}
 .cover .cast{position:absolute;left:0;right:0;bottom:3%;display:flex;justify-content:center;gap:2%;align-items:flex-end}
 .cover .cast img{width:17%;max-width:170px;filter:drop-shadow(0 6px 10px rgba(22,33,43,.18));border-radius:12px}

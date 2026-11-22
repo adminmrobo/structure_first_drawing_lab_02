@@ -14,8 +14,9 @@ os.makedirs(os.path.join(ROOT, "assets", "og"), exist_ok=True)
 for key, cover, t1, t2, cast in ITEMS:
     cp = os.path.join(ROOT, "assets", "img", cover + ".webp")
     if os.path.exists(cp):
-        im = Image.open(cp).convert("RGB"); w, h = im.size; nh = int(w * 630 / 1200)
-        im = im.crop((0, (h - nh) // 2, w, (h - nh) // 2 + nh)).resize((1200, 630))
+        im = Image.open(cp).convert("RGB")  # 1920×1080 = 480×270 격자의 4배
+        g = im.resize((480, 270), Image.NEAREST)  # 원래 픽셀 격자로
+        im = g.crop((40, 30, 440, 240)).resize((1200, 630), Image.NEAREST)  # 400×210 → 정수배 3
     else:
         im = Image.new("RGB", (1200, 630), "#ffffff"); d = ImageDraw.Draw(im)
         for x in range(0, 1200, 40):

@@ -27,7 +27,7 @@ python3 build/check_pages.py    # 콘솔 오류·패널·390/1280px 넘침
 python3 build/check_missions.py # 연습장 미션 판정
 python3 build/make_requests.py  # 그림 요청 꾸러미(docs/image_requests)
 ```
-그림은 `assets/img/{키}.webp`에 넣고 다시 빌드하면 '그림 준비 중' 자리가 바뀝니다. 요청 목록은 `docs/image_requests/checklist.csv`.
+그림 26장(표지 6 픽셀아트 + 본문 20 애니풍, Genspark)은 `assets/img/{키}.webp`에 있습니다. 표지는 480×270 격자를 4배로 키운 무손실 WebP입니다. 요청문은 `docs/image_requests/`.
 
 ## 출처
 연습 구성은 다테 나오토 『デジタルツールで描く！服のシワと影の描き方』(マイナビ) 3장 실천편과 출판사 특전 PDF를 참고했습니다. 책의 그림·사진·문장·도식은 옮기지 않았고, 연구실 캐릭터와 직접 움직이는 실험으로 새로 구성했습니다. 숫자 식은 원리를 보이려고 덧붙인 것입니다. AI 연결의 출처(포즈 추정, ControlNet, IC-Light, DDPM)는 각 페이지 바닥글에 있습니다.

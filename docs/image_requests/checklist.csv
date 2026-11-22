@@ -1,27 +1,27 @@
 order,conversation,file,page,part,ratio,style,status
-1,D01,cover_index,index.html,목차,16:9,pixel,
-2,D01,cover_01,01_standing.html,1부 서 있는 자세,16:9,pixel,
-3,D01,cover_02,02_frills.html,2부 주름 많은 옷,16:9,pixel,
-4,D02,cover_03,03_sitting.html,3부 앉은 자세,16:9,pixel,
-5,D02,cover_04,04_light_dir.html,4부 광원 방향,16:9,pixel,
-6,D02,cover_05,practice/index.html,5부 실전 연습장,16:9,pixel,
-7,D03,p1_haru_contacts,01_standing.html,1부 s1,2:3,anime,
-8,D03,p1_haru_arm_up,01_standing.html,1부 s3,2:3,anime,
-9,D03,p2_sia_frill_made,02_frills.html,2부 s1,2:3,anime,
-10,D03,p2_sia_mixed_shadow,02_frills.html,2부 s5,2:3,anime,
-11,D04,p4_sia_below_light,04_light_dir.html,4부 s2,2:3,anime,
-12,D04,p4_moa_side_light,04_light_dir.html,4부 s3,2:3,anime,
-13,D05,p3_moa_sitting_joints,03_sitting.html,3부 s1,4:3,anime,
-14,D05,p3_moa_pleats_fan,03_sitting.html,3부 s4,4:3,anime,
-15,D06,p1_haru_bend_detail,01_standing.html,1부 s2,16:9,anime,
-16,D06,p1_haru_shadow_order,01_standing.html,1부 s4,16:9,anime,
-17,D06,p1_haru_small_steps,01_standing.html,1부 s5,16:9,anime,
-18,D06,p4_haru_normal_relight,04_light_dir.html,4부 s5,16:9,anime,
-19,D06,p4_trio_four_lights,04_light_dir.html,4부 s1,16:9,anime,
-20,D07,p2_sia_cinch,02_frills.html,2부 s2,16:9,anime,
-21,D07,p2_sia_coarse_fine,02_frills.html,2부 s3,16:9,anime,
-22,D07,p2_sia_pairs,02_frills.html,2부 s4,16:9,anime,
-23,D07,p4_trio_angle_column,04_light_dir.html,4부 s4,16:9,anime,
-24,D08,p3_moa_button_folds,03_sitting.html,3부 s2,16:9,anime,
-25,D08,p3_moa_blazer_vs_shirt,03_sitting.html,3부 s3,16:9,anime,
-26,D08,p3_moa_depth_map,03_sitting.html,3부 s5,16:9,anime,
+1,D01,cover_index,index.html,목차,16:9,pixel,반영 2026-11-23
+2,D01,cover_01,01_standing.html,1부 서 있는 자세,16:9,pixel,반영 2026-11-23
+3,D01,cover_02,02_frills.html,2부 주름 많은 옷,16:9,pixel,반영 2026-11-23
+4,D02,cover_03,03_sitting.html,3부 앉은 자세,16:9,pixel,반영 2026-11-23
+5,D02,cover_04,04_light_dir.html,4부 광원 방향,16:9,pixel,반영 2026-11-23
+6,D02,cover_05,practice/index.html,5부 실전 연습장,16:9,pixel,반영 2026-11-23
+7,D03,p1_haru_contacts,01_standing.html,1부 s1,2:3,anime,반영 2026-11-23
+8,D03,p1_haru_arm_up,01_standing.html,1부 s3,2:3,anime,반영 2026-11-23
+9,D03,p2_sia_frill_made,02_frills.html,2부 s1,2:3,anime,반영 2026-11-23
+10,D03,p2_sia_mixed_shadow,02_frills.html,2부 s5,2:3,anime,반영 2026-11-23
+11,D04,p4_sia_below_light,04_light_dir.html,4부 s2,2:3,anime,반영 2026-11-23
+12,D04,p4_moa_side_light,04_light_dir.html,4부 s3,2:3,anime,반영 2026-11-23
+13,D05,p3_moa_sitting_joints,03_sitting.html,3부 s1,4:3,anime,반영 2026-11-23
+14,D05,p3_moa_pleats_fan,03_sitting.html,3부 s4,4:3,anime,반영 2026-11-23
+15,D06,p1_haru_bend_detail,01_standing.html,1부 s2,16:9,anime,반영 2026-11-23
+16,D06,p1_haru_shadow_order,01_standing.html,1부 s4,16:9,anime,반영 2026-11-23
+17,D06,p1_haru_small_steps,01_standing.html,1부 s5,16:9,anime,반영 2026-11-23
+18,D06,p4_haru_normal_relight,04_light_dir.html,4부 s5,16:9,anime,반영 2026-11-23
+19,D06,p4_trio_four_lights,04_light_dir.html,4부 s1,16:9,anime,반영 2026-11-23
+20,D07,p2_sia_cinch,02_frills.html,2부 s2,16:9,anime,반영 2026-11-23
+21,D07,p2_sia_coarse_fine,02_frills.html,2부 s3,16:9,anime,반영 2026-11-23
+22,D07,p2_sia_pairs,02_frills.html,2부 s4,16:9,anime,반영 2026-11-23
+23,D07,p4_trio_angle_column,04_light_dir.html,4부 s4,16:9,anime,반영 2026-11-23
+24,D08,p3_moa_button_folds,03_sitting.html,3부 s2,16:9,anime,반영 2026-11-23
+25,D08,p3_moa_blazer_vs_shirt,03_sitting.html,3부 s3,16:9,anime,반영 2026-11-23
+26,D08,p3_moa_depth_map,03_sitting.html,3부 s5,16:9,anime,반영 2026-11-23
