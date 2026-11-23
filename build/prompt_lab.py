@@ -85,3 +85,18 @@ NAIVE_LOOK = {
  3: "Deliberately flawed result for teaching: the blazer crumpled with many small knit-like wrinkles, the pleated skirt drawn as straight parallel vertical lines, the hand on the floor hidden behind the skirt.",
  4: "Deliberately flawed result for teaching: shadows contradict each other as if lit from two directions (face shaded on the left, clothes shaded on the right), no cast shadow from the arm or bag.",
 }
+
+# 실제로 받은 비교 그림을 점검표로 본 결과(2026-11-23 첫 결과) — 페이지의 'AI 판단' 재료
+PAIR_SEEN = {
+ 1: ["두 장 모두 요청한 '집업 후드·조거 바지' 대신 기초편 기준 그림의 실험복·청바지가 나왔습니다. 첨부한 기준 그림의 옷이 요청문보다 강하게 따라온 것입니다.",
+     "원리를 넣은 쪽이 팔꿈치 안쪽 주름이 조금 더 정리됐지만 차이는 작습니다. 왼쪽 위 광원의 큰 형체 그림자는 두 장 모두 약합니다."],
+ 2: ["원리 없는 쪽은 기준 그림처럼 긴소매·긴 치마로 돌아갔고, 원리를 넣은 쪽은 요청대로 반소매·무릎 길이입니다.",
+     "원리를 넣은 쪽은 치마가 좌우 대칭인 종 모양이고 프릴 깊이도 고릅니다. 다만 5단계의 '다리 위 물결 모양 그림자'는 두 장 모두 빠졌습니다."],
+ 3: ["두 장 모두 블레이저가 아니라 니트 카디건이 나왔고, 원리 없는 쪽에는 기준 그림의 앞치마까지 따라왔습니다. 그래서 3단계 '빳빳한 천'은 이 그림으로 확인할 수 없습니다.",
+     "원리를 넣은 쪽은 주름치마가 바닥으로 더 퍼지고, 손이 바닥을 짚은 모습이 분명해졌습니다."],
+ 4: ["'극적인 조명'만 적은 쪽은 오히려 그림자가 거의 없는 평평한 그림이 나왔습니다.",
+     "원리를 넣은 쪽은 실험복이 다시 생겼고, '왼쪽 앞 60°, 4분의 3이 밝게'라는 그림자 넓이도 잘 지켜지지 않았습니다. 각도·넓이 같은 수치는 한 번에 잘 지켜지지 않는 사례입니다."],
+}
+PAIR_LESSON = ["첨부한 기준 그림의 옷이 요청문보다 강하게 따라옵니다. 옷을 바꿀 때는 얼굴만 자른 기준 그림을 올리거나, 'not wearing a lab coat'처럼 빼야 할 것을 함께 적습니다.",
+               "'일부러 틀리게'나 '그림자 넓이 4분의 3' 같은 요청은 도구가 잘 지키지 않습니다. 고치기 문장으로 한 번에 하나씩 다시 요청합니다.",
+               "결과는 매번 달라집니다. 원리를 적었다고 믿지 말고, 위 점검표로 직접 확인하는 것이 이 절의 목적입니다."]

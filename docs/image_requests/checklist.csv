@@ -25,11 +25,11 @@ order,conversation,file,page,part,ratio,style,status
 24,D08,p3_moa_button_folds,03_sitting.html,3부 s2,16:9,anime,반영 2026-11-23
 25,D08,p3_moa_blazer_vs_shirt,03_sitting.html,3부 s3,16:9,anime,반영 2026-11-23
 26,D08,p3_moa_depth_map,03_sitting.html,3부 s5,16:9,anime,반영 2026-11-23
-27,E01,pr1_haru_naive,01_standing.html,1부 프롬프트,2:3,anime,
-28,E01,pr1_haru_guided,01_standing.html,1부 프롬프트,2:3,anime,
-29,E02,pr2_sia_naive,02_frills.html,2부 프롬프트,2:3,anime,
-30,E02,pr2_sia_guided,02_frills.html,2부 프롬프트,2:3,anime,
-31,E03,pr3_moa_naive,03_sitting.html,3부 프롬프트,4:3,anime,
-32,E03,pr3_moa_guided,03_sitting.html,3부 프롬프트,4:3,anime,
-33,E04,pr4_haru_naive,04_light_dir.html,4부 프롬프트,2:3,anime,
-34,E04,pr4_haru_guided,04_light_dir.html,4부 프롬프트,2:3,anime,
+27,E01,pr1_haru_naive,01_standing.html,1부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+28,E01,pr1_haru_guided,01_standing.html,1부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+29,E02,pr2_sia_naive,02_frills.html,2부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+30,E02,pr2_sia_guided,02_frills.html,2부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+31,E03,pr3_moa_naive,03_sitting.html,3부 프롬프트,4:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+32,E03,pr3_moa_guided,03_sitting.html,3부 프롬프트,4:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+33,E04,pr4_haru_naive,04_light_dir.html,4부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기
+34,E04,pr4_haru_guided,04_light_dir.html,4부 프롬프트,2:3,anime,첫 결과 반영 2026-11-23 · F01~F04로 다시 받기

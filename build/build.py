@@ -6,7 +6,7 @@ import json, os, html, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
-from prompt_lab import PL, PAIR_NOTE, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
+from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -306,8 +306,10 @@ def prompt_section(P):
 <div class="ctrl">{sel}{chks}</div>
 <div class="promptbox"><b>완성된 요청문 (영어 — 이 시리즈 그림은 영어 요청문으로 만들었습니다)</b><pre class="pl-out" aria-live="polite"></pre><button type="button" class="btn pl-copy">복사하기</button> <span class="hint pl-n"></span></div>
 <details class="promptbox"><summary>비교용 — 주판봇식 요청문(원리 없음)</summary><pre>{E(L['naive'])}</pre></details></div>
-<h3>같은 인물, 다른 요청문</h3><p class="muted">{E(note)}.</p>
-<div class="pair"><div>{art(a, "원리 없는 요청문으로 만든 " + who, arc, "주판봇식 — 원리 없는 요청문")}</div><div>{art(b, "원리를 넣은 요청문으로 만든 " + who, arc, "초파리식 — 위에서 조립한 요청문")}</div></div>
+<h3>같은 인물, 다른 요청문 — 실제로 나온 결과</h3><p class="muted">왼쪽은 주판봇식 요청문, 오른쪽은 위에서 조립한 요청문으로 Genspark에서 받은 첫 결과입니다. 고르지 않고 그대로 실었습니다.</p>
+<div class="pair"><div>{art(a, "원리 없는 요청문으로 받은 " + who + "의 첫 결과", arc, "주판봇식 요청문 — 첫 결과")}</div><div>{art(b, "원리를 넣은 요청문으로 받은 " + who + "의 첫 결과", arc, "초파리식 요청문(위에서 조립) — 첫 결과")}</div></div>
+<div class="box"><b>AI 판단 — 점검표로 본 이 결과</b><ul style="margin:6px 0 0;padding-left:20px">{"".join(f"<li>{E(x)}</li>" for x in PAIR_SEEN[no])}</ul>
+<p style="margin:8px 0 0"><b>배울 점</b></p><ol style="margin:4px 0 0;padding-left:20px">{"".join(f"<li>{E(x)}</li>" for x in PAIR_LESSON)}</ol></div>
 <div class="panel"><div class="ph"><b>결과 점검표 — AI 그림을 그대로 믿어도 될까?</b><small class="pl-score">0 / {len(L['checks'])}</small></div><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{checks}</ul>
 <p class="hint">하나라도 '아니오'면 아래 고치기 문장을 쓰세요. 여러 곳을 한꺼번에 고치라고 하면 맞던 곳까지 바뀌기 쉽습니다.</p>
 <div class="promptbox"><b>고치기 문장(같은 대화에서)</b><pre>{E(L['fix'])}</pre></div></div>
