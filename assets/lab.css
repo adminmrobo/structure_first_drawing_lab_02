@@ -238,3 +238,6 @@ nav.top .i18n-pick select{max-width:34vw}
 .duo>*,.pair>*{min-width:0}
 .fx{white-space:normal;overflow-wrap:anywhere}
 .mathbox table{display:block;overflow-x:auto}
+.plab .ctrl label{display:inline-flex;gap:6px;align-items:center;margin:4px 12px 4px 0}
+.pl-list li{padding:6px 4px;border-bottom:1px dashed var(--rule)}
+.pl-list li.ok{background:var(--green-soft,#e8f6ee)}

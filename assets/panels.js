@@ -552,8 +552,18 @@ function kg(){var raw=document.getElementById('kg-raw');var mount=document.getEl
     if(x==='bib')dl(base+'.bib',refs.map(function(r){return '@misc{'+r.id+',\n  title = {'+r.title+'},\n  author = {'+r.author+'},\n  note = {'+(r.note||'')+'},\n  year = {'+r.year+'}\n}';}).join('\n\n'));
     if(x==='ris')dl(base+'.ris',refs.map(function(r){return 'TY  - GEN\nTI  - '+r.title+'\nAU  - '+r.author+'\nPY  - '+r.year+'\nN1  - '+(r.note||'')+'\nER  - ';}).join('\n'));});});}
 
+
+/* 프롬프트 실습: 요청문 조립 · 복사 · 점검표 */
+function plab(){document.querySelectorAll('.plab').forEach(function(box){var out=box.querySelector('.pl-out'),n=box.querySelector('.pl-n');
+  function upd(){var parts=[box.dataset.head];box.querySelectorAll('.pl-sel').forEach(function(s){var o=s.options[s.selectedIndex];if(o)parts.push(o.dataset.frag);});
+    var k=0;box.querySelectorAll('.pl-chk').forEach(function(c){if(c.checked){parts.push(c.dataset.frag);k++;}});parts.push(box.dataset.tail);out.textContent=parts.join('\n');if(n)n.textContent='원리 '+k+'개 들어감';}
+  box.querySelectorAll('input,select').forEach(function(i){i.addEventListener('change',upd);});upd();
+  var cp=box.querySelector('.pl-copy');cp.addEventListener('click',function(){try{navigator.clipboard.writeText(out.textContent);cp.textContent='복사했습니다';setTimeout(function(){cp.textContent='복사하기';},1200);}catch(e){}});});
+  document.querySelectorAll('.pl-list').forEach(function(ul){var sc=ul.closest('.panel').querySelector('.pl-score'),all=ul.querySelectorAll('.pl-ok');
+    function upd(){var k=0;all.forEach(function(c){c.closest('li').classList.toggle('ok',c.checked);if(c.checked)k++;});sc.textContent=k+' / '+all.length+(k===all.length?' · 모두 확인':'');}
+    all.forEach(function(c){c.addEventListener('change',upd);});upd();});}
 function boot(){document.querySelectorAll('[data-panel]').forEach(function(h){var k=h.getAttribute('data-panel');if(P[k]){try{P[k](h);}catch(e){h.textContent='실험을 불러오지 못했습니다.';if(window.console)console.warn(k,e);}}});
-  document.querySelectorAll('.quiz').forEach(quiz);kg();practice();
+  document.querySelectorAll('.quiz').forEach(quiz);kg();practice();plab();
   var pr=document.getElementById('prog');if(pr)window.addEventListener('scroll',function(){var d=document.documentElement;pr.style.width=(100*d.scrollTop/Math.max(1,d.scrollHeight-d.clientHeight))+'%';},{passive:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

@@ -6,6 +6,8 @@ import json, os, html, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
+from prompt_lab import PL, PAIR_NOTE, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
+from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VER = "v1.0"
@@ -182,7 +184,7 @@ def judge(J):
 def summary(P):
     rows = "".join(f"<tr><td>{E(a)}</td><td>{E(b)}</td><td>{E(c)}</td></tr>" for a, b, c in P["summary"])
     return f"""<section id="sum"><div class="wrap"><h2>{P['no']}부 정리</h2>
-<div class="tbl"><table><thead><tr><th>주제</th><th>한 줄</th><th>작업에서는</th></tr></thead><tbody>{rows}</tbody></table></div></div></section>
+<div class="tbl"><table><thead><tr><th>주제</th><th>핵심</th><th>작업에서는</th></tr></thead><tbody>{rows}</tbody></table></div></div></section>
 """
 
 def outro(P):
@@ -255,7 +257,7 @@ def kg_block(page, pages):
     J = lambda o: json.dumps(o, ensure_ascii=False).replace("</", "<\\/")
     return f"""<section id="kg"><div class="wrap"><h2>지식 색인 — 이 페이지에서 찾아보기</h2>
 <p class="muted">이 페이지에 나온 개념·방법·비유·쓰임을 모았습니다. 검색하고, "설명 보러 가기"로 본문에 돌아갑니다.</p><div id="kg-mount"></div></div></section>
-<section id="export"><div class="wrap"><h2>온톨로지·서지 꾸러미 — 이 페이지의 지식을 가져가기</h2>
+<section id="export"><div class="wrap"><h2>온톨로지·서지 꾸러미 — 파일로 내려받기</h2>
 <p class="muted">지식 색인을 출처와 함께 파일로 내려받습니다. 서지 관리는 BibTeX·RIS, 온톨로지 편집은 Turtle, 그래프 도구는 CSV, 여러 페이지 합치기는 kg.json입니다.</p><div id="export-mount"></div></div></section>
 <script type="application/json" id="kg-raw">{J(raw)}</script>
 <script type="application/ld+json" id="kg-ld">{J(ld)}</script>
@@ -282,11 +284,42 @@ def footer(pre=""):
 </body></html>
 """
 
+def prompt_section(P):
+    L = PL[P["no"]]; no = P["no"]
+    who = PCHAR[L["model"]][0]
+    sel = ""
+    if L.get("models"):
+        sel += '<label>모델 <select class="pl-sel">' + "".join(f'<option data-frag="{E(PCHAR[m][1])}"{" selected" if m == L["model"] else ""}>{E(PCHAR[m][0])}</option>' for m in L["models"]) + '</select></label>'
+        sel += '<label>광원 <select class="pl-sel">' + "".join(f'<option data-frag="{E(en)}"{" selected" if i == 2 else ""}>{E(ko)} ({E(st)})</option>' for i, (ko, st, en) in enumerate(L["lights"])) + '</select></label>'
+        head = f"{L['pose']}\n{PSTYLE}"
+    else:
+        head = f"{L['pose']}\n{PSTYLE}\n{PCHAR[L['model']][1]}"
+    chks = "".join(f'<label><input type="checkbox" class="pl-chk" data-frag="{E(en)}"{"" if "다시 조명" in ko else " checked"}> {E(ko)} <small class="muted">({E(st)})</small></label>' for ko, st, en in L["frags"])
+    checks = "".join(f'<li><label><input type="checkbox" class="pl-ok"> {E(c)}</label></li>' for c in L["checks"])
+    a, b = L["pair"]; note, ar = PAIR_NOTE[no]; arc = {"2:3": "2/3", "4:3": "4/3"}[ar]
+    ex = L["example"]; ex_prompt = "\n".join(["Character illustration.", DBODY, "Character: " + DBODYS[ex][0], DBODYS[ex][1], DARW, DNEG])
+    ex_alt = [st["img"][1] for PP in PARTS for st in PP["steps"] if st["img"][0] == ex][0]
+    return f"""<section id="prompt"><div class="wrap"><span class="roomno">{no}부 · 프롬프트 실습</span><h2>프롬프트로 직접 만들어 보기 — {E(who)}</h2>
+{talk([("doctor", "e07", "배운 다섯 단계를 이제 말로 적어 이미지 AI에게 맡겨 보자. 원리를 적은 요청문과 안 적은 요청문은 결과가 다르다."), ("jupanbot", "e16", "'걸작, 아주 자세하게'만 쓰면 다 됩니다!"), ("fruitfly", "e09", "접점과 광원을 적지 않으면 AI도 아무 데나 주름을 넣지 않을까?")])}
+<div class="box"><b>순서</b> — ① 아래에서 넣을 원리를 고릅니다. ② 완성된 요청문을 복사해 이미지 AI(이 시리즈는 Genspark)에 붙여 넣고, 같은 인물로 나오게 기초편의 {E(who)} 기준 전신 그림을 함께 올립니다. ③ 나온 그림을 점검표로 확인합니다. ④ 틀린 곳은 고치기 문장으로 <b>한 번에 하나씩</b> 고칩니다.</div>
+<div class="panel plab" data-head="{E(head)}" data-tail="{E(PNEG)}"><div class="ph"><b>요청문 조립</b><small>체크한 원리만 들어갑니다</small></div>
+<div class="ctrl">{sel}{chks}</div>
+<div class="promptbox"><b>완성된 요청문 (영어 — 이 시리즈 그림은 영어 요청문으로 만들었습니다)</b><pre class="pl-out" aria-live="polite"></pre><button type="button" class="btn pl-copy">복사하기</button> <span class="hint pl-n"></span></div>
+<details class="promptbox"><summary>비교용 — 주판봇식 요청문(원리 없음)</summary><pre>{E(L['naive'])}</pre></details></div>
+<h3>같은 인물, 다른 요청문</h3><p class="muted">{E(note)}.</p>
+<div class="pair"><div>{art(a, "원리 없는 요청문으로 만든 " + who, arc, "주판봇식 — 원리 없는 요청문")}</div><div>{art(b, "원리를 넣은 요청문으로 만든 " + who, arc, "초파리식 — 위에서 조립한 요청문")}</div></div>
+<div class="panel"><div class="ph"><b>결과 점검표 — AI 그림을 그대로 믿어도 될까?</b><small class="pl-score">0 / {len(L['checks'])}</small></div><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{checks}</ul>
+<p class="hint">하나라도 '아니오'면 아래 고치기 문장을 쓰세요. 여러 곳을 한꺼번에 고치라고 하면 맞던 곳까지 바뀌기 쉽습니다.</p>
+<div class="promptbox"><b>고치기 문장(같은 대화에서)</b><pre>{E(L['fix'])}</pre></div></div>
+<details class="promptbox"><summary>이 페이지 그림을 실제로 만든 요청문 보기 — {E(ex)}</summary>{art(ex, ex_alt, "4/3" if ex.startswith("p3") else "2/3")}<pre>{E(ex_prompt)}</pre><p class="hint">빨간 화살표·동그라미 지시(Annotation 줄)는 설명용 표시를 넣으려고 붙인 것입니다. 일반 그림에는 빼세요.</p></details>
+</div></section>
+"""
+
 def build_part(P):
     t = f"{SERIES} {P['no']}부 — {P['title']}"
     s = head(t, P["desc"], P["og"], P["file"])
     navl = [(f"#{x['id']}", f"{k+1}단계") for k, x in enumerate(P["steps"])]
-    navl += [("#judge", "평가"), ("#sum", "정리"), (P["next"][0], "다음 →")]
+    navl += [("#prompt", "프롬프트"), ("#judge", "평가"), ("#sum", "정리"), (P["next"][0], "다음 →")]
     s += nav(navl)
     s += cover(P["cover_key"], P["cover_cap"], P["cover_cast"])
     s += f"""<header class="hero"><div class="wrap"><span class="kicker">{E(P['kicker'])}</span><h1>{E(P['title'])}</h1><p class="lead">{E(P['lead'])}</p>
@@ -296,6 +329,7 @@ def build_part(P):
 """
     for k, st in enumerate(P["steps"]):
         s += step(P, k + 1, st)
+    s += prompt_section(P)
     s += judge(P["judge"]) + summary(P) + outro(P)
     s += kg_block(P["file"].replace(".html", ""), [P["file"]])
     s += footer()
@@ -321,7 +355,7 @@ def build_index():
     t = f"{SERIES} — 주름과 그림자를 직접 넣어 보기"
     d = "주름 없는 선화에 접점 → 주름 → 그림자 순서로 직접 넣어 보는 실천편입니다. 서 있는 자세, 주름 많은 옷, 앉은 자세, 광원 방향별 그림자를 실험으로 익힙니다."
     s = head(t, d, "og_index.jpg", "index.html")
-    s += nav([("#howto", "읽는 법"), ("#parts", "편 목록"), ("#map", "큰 그림"), ("#cast", "등장인물"), ("#source", "원리와 출처")])
+    s += nav([("#howto", "읽는 법"), ("#parts", "편 목록"), ("#map", "흐름"), ("#cast", "등장인물"), ("#source", "원리와 출처")])
     s += cover("cover_index", "연구실 아틀리에 · 주름 없는 선화 앞의 세 모델과 두 화가", [("fruitfly", "e09"), ("haru", "e01"), ("sia", "e13"), ("moa", "e19"), ("jupanbot", "e16")])
     s += f"""<header class="hero"><div class="wrap"><span class="kicker">연구실 특별편 02 · 실천편</span>
 <h1>구조 먼저 그리기 연구실 02<br>실천편 — 주름과 그림자를 직접 넣어 보기</h1>
@@ -332,6 +366,7 @@ def build_index():
 <li><b>처음부터 차례로</b>(권장): 부마다 실험을 눌러 보며 20~30분, 전체 2~3시간입니다.</li>
 <li><b>기초편을 아직 안 봤다면</b>: 낱말이 낯설 때마다 <a href="{BASE}">기초편</a>의 2부(빛과 그림자)·3부(옷 주름)를 곁에 열어 두세요.</li>
 <li><b>손으로 연습하려면</b>: 각 단계의 순서를 따라 원서의 연습 선화나 직접 찍은 사진 위에 그려 보세요. 마지막 5부 '숙제 책상'이 순서 점검표입니다.</li>
+<li>각 부의 <b>프롬프트로 직접 만들어 보기</b>에서 그 부의 원리를 골라 요청문을 조립하고, 이미지 AI로 실제 그림을 만들어 점검표로 확인합니다.</li>
 <li>각 부 끝의 <b>평가단 채점</b>은 이야기 속 예시 점수입니다. 확인 퀴즈와 실전 연습장 미션으로 스스로 점검하세요.</li></ul></div></div></section>
 <section id="parts"><div class="wrap"><h2>편 목록</h2>
 <p class="muted">모델은 하루·시아·모아, 화가는 주판봇과 초파리, 평가단은 X1·X2·X3, 해설은 박사입니다. 부마다 두 화가가 겨루고 평가단이 점수를 매깁니다.</p>
@@ -342,10 +377,10 @@ def build_index():
 <a class="card" href="04_light_dir.html">{face("haru","e19")}<span class="n">4부 · 모델 셋 모두</span><h3>광원 방향</h3><p>위·아래·옆·뒤 조명, 위에서 본 각도, 노멀 지도로 다시 조명.</p></a>
 <a class="card" href="practice/index.html">{face("x2","e16")}<span class="n">5부 · 마지막 장</span><h3>실전 연습장</h3><p>접점 탐정·프릴 공방·조명실·숙제 책상을 직접 운영합니다.</p></a>
 </div></div></section>
-<section id="map"><div class="wrap"><h2>큰 그림 — 앞 부의 한계가 다음 부의 이유</h2>{flow_strip()}
-<div class="tbl" style="margin-top:16px"><table><thead><tr><th>부</th><th>제목</th><th>앞 부의 한계 → 이 부가 필요한 이유</th><th>핵심</th></tr></thead><tbody>
+<section id="map"><div class="wrap"><h2>다섯 부는 이렇게 이어집니다</h2>{flow_strip()}
+<div class="tbl" style="margin-top:16px"><table><thead><tr><th>부</th><th>제목</th><th>이 부를 배우는 까닭</th><th>배우는 것</th></tr></thead><tbody>
 {''.join(f"<tr><td>{n}</td><td>{E(t)}</td><td>{E(a)}</td><td>{E(b)}</td></tr>" for n, t, a, b in FLOW)}</tbody></table></div>
-<div class="box" style="margin-top:16px"><b>모든 부에 공통으로 흐르는 순서</b> — ① 광원 확인 → ② 접점 찍기 → ③ 큰 주름(관절·꼭대기·만든 주름) → ④ 큰 형체 그림자 → ⑤ 주름·단차 그림자 → ⑥ 떨어지는 그림자의 주인 확인. 4부에서 광원이 바뀌어도 ②~⑥은 그대로입니다.</div>
+<div class="box" style="margin-top:16px"><b>어느 부에서나 같은 그리기 순서</b> — ① 광원 확인 → ② 접점 찍기 → ③ 큰 주름(관절·꼭대기·만든 주름) → ④ 큰 형체 그림자 → ⑤ 주름·단차 그림자 → ⑥ 떨어지는 그림자의 주인 확인. 4부에서 광원이 바뀌어도 ②~⑥은 그대로입니다.</div>
 <p class="muted" style="margin-top:12px">원리를 먼저 보고 싶다면: <a href="{BASE}">기초편 — 구조 먼저 보는 캐릭터 그리기 연구실(1~7부)</a></p></div></section>
 <section id="cast"><div class="wrap"><h2>등장인물</h2><div class="cast-grid">{''.join(f'<div class="who">{face(k, "e01" if k in ("haru","sia","moa") else "e13")}<b>{E(CH[k][0])}</b><span>{E(CH[k][1])}</span></div>' for k in ["doctor","haru","sia","moa","jupanbot","fruitfly","x1","x2","x3"])}</div></div></section>
 <section id="source"><div class="wrap"><h2>원리와 출처</h2>
@@ -404,11 +439,11 @@ def build_practice():
             '<label>연습 그림 <select name="pic"><option value="haru_hoodie">하루 · 후드 집업, 한 손 허리</option><option value="sia_maid">시아 · 메이드복, 치마 끝 잡기</option><option value="moa_sit">모아 · 블레이저, 바닥에 앉기</option><option value="trio_walk">하루 · 반소매 셔츠, 걷기</option></select></label><label>광원 <select name="lt"><option value="top">위</option><option value="left">왼쪽 앞</option><option value="right">오른쪽</option><option value="below">아래</option></select></label>',
             f'<div style="width:100%"><p class="hint">아래 단추를 그리는 순서대로 누르세요(섞여 있습니다).</p><div class="opts">{btns}</div><button type="button" class="btn" data-reset="1" style="margin-top:8px">처음부터</button></div>',
             ["여섯 단계를 한 번도 틀리지 않고 순서대로 완성하기", "서로 다른 연습 그림 두 장으로 순서 완성하기", "'아래' 광원으로 완성해 요청문에 '턱 아래가 밝다'가 들어가게 하기"],
-            [("01_standing.html#s4", "1부 4단계 큰 형체 먼저"), ("index.html#map", "공통으로 흐르는 순서")],
+            [("01_standing.html#s4", "1부 4단계 큰 형체 먼저"), ("index.html#map", "어느 부에서나 같은 순서")],
             '<div class="promptbox"><b>완성된 요청문</b><pre aria-live="polite">순서를 끝까지 맞히면 요청문이 나타납니다.</pre><button type="button" class="btn copy">복사하기</button></div>')
     s += f"""</div></section>
-<section id="wrap"><div class="wrap"><h2>마무리 — 네 작업장이 함께 묻는 질문</h2>
-<div class="box"><p>접점 탐정에서 찾은 점은 주름의 출발점이고, 프릴 공방의 비율은 만든 주름의 깊이이며, 조명실의 각도는 그림자의 넓이입니다. 숙제 책상은 이 셋을 한 장의 그림에 차례로 넣는 순서입니다. 결국 하나로 잇는 질문은 이것입니다: <b>"광원과 접점을 먼저 정했는가, 그리고 큰 것부터 작은 것 순서로 넣었는가?"</b></p>
+<section id="wrap"><div class="wrap"><h2>마무리 — 네 작업장의 공통 질문</h2>
+<div class="box"><p>접점 탐정에서 찾은 점은 주름의 출발점이고, 프릴 공방의 비율은 만든 주름의 깊이이며, 조명실의 각도는 그림자의 넓이입니다. 숙제 책상은 이 셋을 한 장의 그림에 차례로 넣는 순서입니다. 네 곳을 하나로 잇는 질문은 이것입니다: <b>"광원과 접점을 먼저 정했는가, 그리고 큰 것부터 작은 것 순서로 넣었는가?"</b></p>
 <p class="hint">한계: 이 연습장의 천·조명 계산은 원리를 보이기 위해 크게 단순화했습니다. 숫자는 교육용 예시이며, 실제 옷·그림 도구·렌더러의 값과 다릅니다.</p></div>
 <div class="next"><a href="{pre}04_light_dir.html">← 4부 광원 방향</a><a href="{pre}index.html">목차로</a></div></div></section>
 """
