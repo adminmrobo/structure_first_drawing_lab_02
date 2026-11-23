@@ -1,0 +1,160 @@
+{
+ "version": "1.0",
+ "made": "2026-11-24",
+ "via": "rehang-2026-11-24",
+ "domains": [
+  "art",
+  "genai"
+ ],
+ "note": "분야 뼈대 주제에 다시 걸기(ai-lab-retrofit 15장). links는 자동 후보이며 틀린 줄은 지우면 된다. 빌드 스크립트가 있는 저장소는 빌드 끝에 rehang.apply_overlay()가 이 파일을 적용한다.",
+ "topics": {
+  "lab:topic/clothing-folds": {
+   "ko": "옷 주름",
+   "en": "Clothing folds",
+   "domain": [
+    "art"
+   ],
+   "level": 2
+  },
+  "lab:topic/light-shadow": {
+   "ko": "빛과 그림자",
+   "en": "Light and shadow",
+   "domain": [
+    "art"
+   ],
+   "level": 2
+  },
+  "lab:topic/simplify-forms": {
+   "ko": "도형으로 단순화",
+   "en": "Simplifying into basic forms",
+   "domain": [
+    "art"
+   ],
+   "level": 1
+  },
+  "lab:topic/volume-planes": {
+   "ko": "면의 방향과 부피",
+   "en": "Planes and volume",
+   "domain": [
+    "art"
+   ],
+   "level": 2
+  }
+ },
+ "links": {
+  "lab:concept/anchor-fold": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "고정 주름(단추)"
+  },
+  "lab:concept/bend-difference": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "굽힌 관절의 길이 차"
+  },
+  "lab:concept/cinch": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "조임 주름"
+  },
+  "lab:concept/contact-point": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "접점"
+  },
+  "lab:concept/gather-ratio": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "개더 비율과 프릴"
+  },
+  "lab:concept/light-direction": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "광원 방향과 그림자"
+  },
+  "lab:concept/mixed-shadow": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "섞인 그림자와 그림자의 주인"
+  },
+  "lab:concept/peak-direction": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "꼭대기와 주름 방향"
+  },
+  "lab:concept/pleat-spread": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "퍼진 주름치마"
+  },
+  "lab:concept/side-cast": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "옆 빛과 팔 그림자"
+  },
+  "lab:concept/sitting-joints": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "앉은 자세의 관절 주름"
+  },
+  "lab:concept/step-shadow": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "단차의 떨어지는 그림자"
+  },
+  "lab:concept/stiff-fabric": {
+   "topic": "lab:topic/clothing-folds",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "빳빳한 천과 깃 잇기"
+  },
+  "lab:concept/under-light": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "아래에서 오는 빛"
+  },
+  "lab:method/big-form-first": {
+   "topic": "lab:topic/volume-planes",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "큰 형체 그림자 먼저"
+  },
+  "lab:method/coarse-to-fine": {
+   "topic": "lab:topic/simplify-forms",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "큰 선 먼저, 잔물결 나중"
+  },
+  "lab:method/depth-order": {
+   "topic": "lab:topic/volume-planes",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "겹침 순서와 깊이 지도"
+  },
+  "lab:method/relighting": {
+   "topic": "lab:topic/light-shadow",
+   "score": 3,
+   "why": "사람이 고름",
+   "ko": "노멀 지도로 다시 조명"
+  }
+ },
+ "retag": {
+  "from": [],
+  "to": [
+   "art"
+  ]
+ }
+}
