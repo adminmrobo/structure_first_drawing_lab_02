@@ -172,3 +172,17 @@ RETRY_SEEN = {
                               "다만 그림자 띠가 연해서 '4분의 1'이 또렷하게 보이지는 않습니다. 팔·가방이 몸통에 드리우는 그림자도 약합니다."]),
 }
 RETRY_LESSON = "다시 시도에서 배운 점 — ① 숫자(비율·넓이)보다 모양을 말로 적는다. ② 그림자는 '광원을 옮겨라'보다 '어디를 얼마나 어둡게'를 적는다. ③ 원래 그림의 빛을 먼저 지우게 한다. ④ 좁은 부위의 작은 주름은 두 번째 시도에서도 약하니, 부분 수정을 쓰고 결과를 확대해 흔적을 확인한다."
+
+# 한 번 더(3차) — 2차에서도 일부만 된 실습
+RETRY3 = {
+ (2, "x2"): dict(key="mk2_2_sia_tight_waist_retry2", attach="pr2_sia_guided", how="부분 수정(허리끈과 그 위아래 손바닥 폭만 칠하기)",
+   why="2차는 허리띠 자체에만 주름이 잡히고, 어깨끈 옆에 얼룩이 생겼습니다. 3차는 얼룩 없는 A 그림에서 다시 시작하고, 칠하는 범위를 끈 위아래 손바닥 폭까지 넓혀 '끈 쪽으로 모이는' 주름이 들어갈 자리를 줍니다. 주름 수·길이·방향을 복주머니에 빗대어 그림처럼 적습니다.",
+   prompt=("In the painted area only (the apron waist tie and about a hand's width above and below it): the waist tie is pulled very tight, like the drawstring of a pouch. "
+           "The fabric above the tie (the black bodice) and below it (the white apron and the black skirt) bunches toward the tie: draw 6 to 8 short, clearly visible fold lines on each side, "
+           "all converging on the tie from above and from below, with small dark shadows between the folds. The waist width stays the same. "
+           "Keep everything outside the painted area exactly unchanged, the same art style. Still no text."),
+   whole=("Edit the attached image. Change only the area around the apron waist tie: the tie is pulled very tight, like the drawstring of a pouch; draw 6 to 8 short, clearly visible gathered folds "
+          "above the tie (on the black bodice) and below it (on the white apron and black skirt), all converging on the tie, with small dark shadows between them. "
+          "The waist width stays the same. Keep the same character, outfit, pose, framing and art style. Still no text."),
+   more="The gathered folds are still too faint. Make each fold darker and longer, clearly converging on the tie from above and from below, like a tightly pulled drawstring pouch."),
+}

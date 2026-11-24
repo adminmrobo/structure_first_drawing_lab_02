@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
-from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY, RETRY_SEEN, RETRY_LESSON
+from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY, RETRY_SEEN, RETRY_LESSON, RETRY3
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -303,7 +303,20 @@ def retry_box(no, x, ar):
 <p class="hint">새 대화를 열고 <a href="assets/img/{r['attach']}.webp" download>이 그림</a>을 첨부한 뒤 아래 문장을 보냅니다. 부분 수정 기능이 있으면 바꿀 곳만 칠하고 보냅니다.</p>
 <div class="promptbox"><pre id="{pid}">{E(r['prompt'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}">복사하기</button></div>
 <div class="promptbox"><b>그래도 약하면 같은 대화에서 한 줄 더</b><pre id="{pid}m">{E(r['more'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}m">복사하기</button></div>
-<div class="pair"><div>{art(x['b_key'], "1차 결과 — " + x['title'], ar, "1차 결과(실패, 그대로 둠)")}</div><div>{art(r['key'], "2차 결과 — " + x['title'], ar, "2차 결과" + ("(실제로 만든 그림, 새 대화에서 한 번)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>{retry_seen(no, x, got)}</div>"""
+<div class="pair"><div>{art(x['b_key'], "1차 결과 — " + x['title'], ar, "1차 결과(실패, 그대로 둠)")}</div><div>{art(r['key'], "2차 결과 — " + x['title'], ar, "2차 결과" + ("(실제로 만든 그림, 새 대화에서 한 번)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>{retry_seen(no, x, got)}{retry3_box(no, x, ar)}</div>"""
+
+def retry3_box(no, x, ar):
+    r = RETRY3.get((no, x["id"]))
+    if not r:
+        return ""
+    pid = f"rt3{no}{x['id']}"; got = has_img(r["key"]); r2 = RETRY[(no, x["id"])]["key"]
+    return f"""<div class="panel" style="border-color:var(--orange);margin-top:14px"><div class="ph"><b>7 · 한 번 더(3차) — 1·2차 결과는 그대로 둡니다</b><small>방법: {E(r['how'])}</small></div>
+<p><b>왜 한 번 더 하나</b> — {E(r['why'])}</p>
+<p class="hint">새 대화를 열고 <a href="assets/img/{r['attach']}.webp" download>이 그림(A, 얼룩 없음)</a>을 첨부합니다. 편집 화면에서 부분 수정(브러시)으로 허리끈과 그 위아래 손바닥 폭만 칠한 뒤 아래 문장을 보냅니다.</p>
+<div class="promptbox"><b>부분 수정용 문장</b><pre id="{pid}">{E(r['prompt'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}">복사하기</button></div>
+<details class="promptbox"><summary>부분 수정 기능이 없을 때 — 그림 전체 편집용 문장</summary><pre id="{pid}w">{E(r['whole'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}w">복사하기</button></details>
+<div class="promptbox"><b>그래도 약하면 같은 대화에서 한 줄 더</b><pre id="{pid}m">{E(r['more'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}m">복사하기</button></div>
+<div class="pair"><div>{art(r2, "2차 결과 — " + x['title'], ar, "2차 결과(일부, 그대로 둠)")}</div><div>{art(r['key'], "3차 결과 — " + x['title'], ar, "3차 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div></div>"""
 
 def retry_seen(no, x, got):
     if not got or (no, x["id"]) not in RETRY_SEEN:
