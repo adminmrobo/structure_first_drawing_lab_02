@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
-from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON
+from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -293,6 +293,18 @@ def seen_box(no, x):
     col = {"예상대로": "var(--green)", "일부": "var(--orange)"}.get(v, "var(--red)")
     return f'<div class="box"><b>4 · 실제 결과 — <span style="color:{col}">{E(v)}</span></b><ul style="margin:6px 0 0;padding-left:20px">' + "".join(f"<li>{E(t)}</li>" for t in lines) + "</ul></div>"
 
+def retry_box(no, x, ar):
+    r = RETRY.get((no, x["id"]))
+    if not r:
+        return ""
+    pid = f"rt{no}{x['id']}"; got = has_img(r["key"])
+    return f"""<div class="panel" style="border-color:var(--orange)"><div class="ph"><b>6 · 다시 시도 — 1차 결과는 위에 그대로 두었습니다</b><small>방법: {E(r['how'])}</small></div>
+<p><b>왜 다시 하나</b> — {E(r['why'])}</p>
+<p class="hint">새 대화를 열고 <a href="assets/img/{r['attach']}.webp" download>이 그림</a>을 첨부한 뒤 아래 문장을 보냅니다. 부분 수정 기능이 있으면 바꿀 곳만 칠하고 보냅니다.</p>
+<div class="promptbox"><pre id="{pid}">{E(r['prompt'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}">복사하기</button></div>
+<div class="promptbox"><b>그래도 약하면 같은 대화에서 한 줄 더</b><pre id="{pid}m">{E(r['more'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}m">복사하기</button></div>
+<div class="pair"><div>{art(x['b_key'], "1차 결과 — " + x['title'], ar, "1차 결과(실패, 그대로 둠)")}</div><div>{art(r['key'], "2차 결과 — " + x['title'], ar, "2차 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div></div>"""
+
 def mk_block(no, k, x):
     who = PCHAR[x["model"]][0]; ak = a_key(x["a"]); ap = a_prompt(x["a"])
     ar = "4/3" if no == 3 and x["id"] == "x1" else ("4/3" if ak.startswith("pr3") else "2/3")
@@ -311,7 +323,7 @@ def mk_block(no, k, x):
 <h4>3 · 예상 결과 — 이렇게 바뀌면 성공</h4><ol>{ex}</ol>
 <div class="pair"><div>{art(ak, "A 결과 — " + x['title'], ar, "A 결과(실제로 만든 그림)")}</div><div>{art(x['b_key'], "B 결과 — " + x['title'], ar, "B 결과" + ("(실제로 만든 그림, 같은 대화에서 B 문장 한 번)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>
 {seen_box(no, x)}<h4>5 · 결과에서 확인할 것</h4><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{ck}</ul><p class="hint"><span class="pl-score">0 / 3</span></p>
-<div class="box"><b>주의할 점</b> — {E(x['caution'])} 한 번의 요청에 여러 변화를 넣지 않습니다. 차이가 약하면 새 대화에서 A부터 다시 만들어 봅니다.</div></div>
+<div class="box"><b>주의할 점</b> — {E(x['caution'])} 한 번의 요청에 여러 변화를 넣지 않습니다. 차이가 약하면 새 대화에서 A부터 다시 만들어 봅니다.</div>{retry_box(no, x, ar)}</div>
 """
 
 def prompt_section(P):

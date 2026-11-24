@@ -131,3 +131,31 @@ SEEN = {
                    "그림자 넓이처럼 숫자로 적은 조건은 한 번에 잘 지켜지지 않습니다. 같은 대화에서 'the left three quarters of her body must be brightly lit'처럼 한 가지만 다시 요청합니다."]),
 }
 MK_LESSON = "여덟 실습을 모아 보면, 자세·옷차림처럼 모양이 바뀌는 요청(1-1, 3-1, 3-2, 4-1)은 잘 지켜지고, 그림자 방향·물결 깊이·조임처럼 미묘한 요청(1-2, 2-1, 2-2, 4-2)은 약하게 반영되었습니다. 미묘한 원리일수록 결과를 직접 확인하고, 한 가지씩 더 세게 다시 요청해야 합니다."
+
+# 실패한 실습의 다시 시도(2차) — 1차 결과는 페이지에 그대로 두고, 아래에 2차 문장과 결과 자리를 더한다.
+RETRY = {
+ (1, "x2"): dict(key="mk1_2_haru_light_right_retry", attach="pr1_haru_guided", how="편집(그림 전체)",
+   why="1차는 '그림자만 바꾸라'는 말을 도구가 아주 약하게 반영했습니다. 2차는 그림자를 어디에, 얼마나 진하게 넣을지 눈에 보이는 말로 적고, 원래 그림의 빛을 먼저 지우게 합니다.",
+   prompt=("Edit the attached image. First remove all existing shading, then relight it with ONE strong light source from the upper RIGHT side of the picture. "
+           "Make the shadows much darker and clearly visible: the LEFT side (as seen in the picture) of her face, hair, hoodie, lab coat and both legs in solid two-tone cel shadow (dark lavender-gray), "
+           "the right side bright. Her cast shadow falls on the floor toward the lower left. Keep the same character, outfit, pose, framing and art style. Still no text."),
+   more="The shadows are still too weak. Make the left side of her body clearly darker, like a strong spotlight from the right."),
+ (2, "x1"): dict(key="mk2_1_sia_shallow_frills_retry", attach="mk2_1_sia_shallow_frills", how="편집(그림 전체)",
+   why="1차는 '비율 1.2'라는 숫자를 도구가 알아듣지 못했습니다. 2차는 숫자 대신 모양을 말로 적고, 지금보다 얼마나 얕게 할지 비교로 말합니다.",
+   prompt=("Edit the attached image. Change only the ruffles on the apron hem and the petticoat: make them almost flat, very gentle shallow waves, like the lightly wavy edge of a ribbon, "
+           "about one third as deep as they are now. Keep the same number of waves and keep the ruffles (do not remove them). "
+           "Keep the same character, outfit, pose, framing and art style. Still no text."),
+   more="The ruffles are still too deep. Flatten them more, so the hem looks almost straight with only tiny waves."),
+ (2, "x2"): dict(key="mk2_2_sia_tight_waist_retry", attach="mk2_2_sia_tight_waist", how="부분 수정(허리 둘레만 칠하기) — 기능이 없으면 그림 전체 편집",
+   why="1차는 작은 부위의 주름 변화가 무시되었습니다. 2차는 도구의 부분 수정 기능으로 허리 둘레만 칠해 그곳만 고치게 하고, 주름 수와 방향을 구체적으로 적습니다.",
+   prompt=("In the painted waist area only: the apron waist tie is pulled very tight. Draw at least six short, clearly visible gathered folds that bunch toward the tie — "
+           "on the bodice just above the tie pointing down toward it, and on the skirt and apron just below pointing up toward it. "
+           "Keep the same body shape and waist width, the same outfit and art style. Still no text."),
+   more="Make the gathered folds above and below the waist tie deeper and darker, with small shadows between them."),
+ (4, "x2"): dict(key="mk4_2_moa_front_left_retry", attach="p4_moa_side_light", how="편집(그림 전체)",
+   why="1차는 '4분의 3이 밝게'라는 넓이를 지키지 못하고 몸 전체를 어둡게 했습니다. 2차는 그림의 왼쪽·오른쪽을 기준으로 밝은 곳과 어두운 곳을 따로 적어 헷갈리지 않게 합니다.",
+   prompt=("Edit the attached image. Remove the red and blue marks and all existing shading. Relight it with ONE light source from the LEFT side of the picture, in front of her at about 60 degrees and slightly high. "
+           "About three quarters of her body, starting from the left edge of the picture, is brightly lit; only a narrow strip along the RIGHT edge of her body (about one quarter) is in dark two-tone cel shadow. "
+           "Her raised forearm and the bag cast short shadows onto the blazer, shifted to the right. Keep the same character, outfit, pose, framing and art style. Still no text."),
+   more="Too much of her body is dark. Make the left three quarters clearly bright and keep only a narrow dark strip on the right edge."),
+}
