@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
+from make_lab import EX, a_prompt, a_key
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,6 +21,7 @@ CHARREPO = "https://github.com/adminmrobo/fruitfly-lab-expressions"
 SERIES = "구조 먼저 그리기 연구실 02 · 실천편"
 E = html.escape
 PARTS = [P1, P2, P3, P4]
+PXFIX = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "px_fix.html")).read()  # 픽셀 깨짐 보정(px-fix v1)
 
 CH = {
  "doctor": ("박사", "해설. 단계마다 현장 질문으로 열고 해석 문장으로 닫는다"),
@@ -62,7 +64,7 @@ def head(title, desc, og, path, pre=""):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{pre}assets/lab.css">
-</head>
+{PXFIX}</head>
 <body data-root="{pre}">
 <div id="prog"></div>
 """
@@ -93,7 +95,7 @@ def cover(key, cap, cast, pre=""):
 
 def three(a, b, c, abbr):
     dl = "".join(f"<dt>{E(x)}</dt><dd>{E(y)}</dd>" for x, y in abbr)
-    return f"""<div class="three"><h2>처음 오신 분께 — 이 페이지를 3줄로</h2><ul>
+    return f"""<div class="three"><h2>처음 오신 분께 — 세 줄 요약</h2><ul>
 <li><b>무엇을</b>: {E(a)}</li><li><b>왜 중요한가</b>: {E(b)}</li><li><b>작업에서는</b>: {E(c)}</li></ul>
 <p>그림 실력·코드·수식을 몰라도 됩니다. 실험을 눌러 보며 따라오세요.</p>
 <details class="abbr"><summary>낱말·약어 풀이 (펼치기)</summary><dl>{dl}</dl></details></div>\n"""
@@ -135,9 +137,9 @@ def mathbox(m):
 
 def step(P, i, s):
     no = P["no"]
-    labels = ["문제", "앞 방법의 한계", "해법"]
+    labels = ["무엇이 문제인가", "그냥 하면 막히는 곳", "이렇게 푼다"]
     why = "".join(f"<li><b>{labels[k]}</b> — {E(x)}</li>" for k, x in enumerate(s["why"]))
-    whybox = f'<div class="box why"><h4>왜 이 방법을 쓰나</h4><ol>{why}</ol><div class="easy"><b>쉽게 말하면</b> — {E(s["easy"])}</div></div>'
+    whybox = f'<div class="box why"><h4>왜 이렇게 하나</h4><ol>{why}</ol><div class="easy"><b>쉽게 말하면</b> — {E(s["easy"])}</div></div>'
     calm = talk([("doctor", "e08", "여기서 한 번 멈춰도 괜찮아요. 식이 낯설면 건너뛰고 아래 실험부터 눌러 보세요. 숫자는 실험이 대신 계산해 줍니다.")])
     duo = f'<div class="duo">{whybox}{mathbox(s["math"])}</div>{calm}' if s.get("math") else f'<div style="margin:16px 0">{whybox}</div>'
     solve = "".join(f"<p>{E(x)}</p>" for x in s["solve"])
@@ -154,10 +156,10 @@ def step(P, i, s):
 <div class="pair"><div class="box"><h4>일상으로 치면</h4><p>{E(s['daily'])}</p></div><div class="box ml"><h4>그림·VFX 현장에서는</h4><p>{E(s['field'])}</p></div></div>
 {talk(s['talk'])}
 {panel(no, i, s['panel'])}
-<div class="solve"><h4>풀이</h4>{solve}</div>
+<div class="solve"><h4>실험 결과 읽기</h4>{solve}</div>
 {extra}{img}
-<div class="solve"><h4>AI 판단 코너 — 그대로 믿어도 될까?</h4><p>{E(s['ai'][0])}</p><details class="code"><summary>확인해 보기</summary><p>{E(s['ai'][1])}</p></details></div>
-<div class="limit"><b>이 단계의 한계</b> — {E(s['limit'])}</div>
+<div class="solve"><h4>AI 결과, 그대로 써도 될까?</h4><p>{E(s['ai'][0])}</p><details class="code"><summary>확인해 보기</summary><p>{E(s['ai'][1])}</p></details></div>
+<div class="limit"><b>주의할 점</b> — {E(s['limit'])}</div>
 {quiz(q[0], q[1], q[2], q[3], q[4])}
 </div></section>
 """
@@ -284,6 +286,27 @@ def footer(pre=""):
 </body></html>
 """
 
+def mk_block(no, k, x):
+    who = PCHAR[x["model"]][0]; ak = a_key(x["a"]); ap = a_prompt(x["a"])
+    ar = "4/3" if no == 3 and x["id"] == "x1" else ("4/3" if ak.startswith("pr3") else "2/3")
+    links = " · ".join(f'<a href="#{sid}">{E(t)}</a>' for sid, t in x["steps"])
+    ex = "".join(f"<li>{E(t)}</li>" for t in x["expect"])
+    ck = "".join(f'<li><label><input type="checkbox" class="pl-ok"> {E(t)}</label> <a href="{h}" class="muted">({E(dict(x["steps"]).get(h[1:], "원리 보기"))})</a></li>' for t, h in x["checks"])
+    pid = f"mk{no}{x['id']}"
+    got = has_img(x["b_key"])
+    return f"""<div class="panel mk" id="{pid}"><div class="ph"><b>실습 {no}-{k} · {E(x['title'])}</b><small>연결: {links}</small></div>
+<p><b>목표</b> — {E(x['goal'])}</p>
+<div class="box"><b>준비</b> — ① 이미지 AI(이 시리즈는 Genspark)에서 <b>새 대화</b>를 엽니다. ② 같은 인물로 나오게 <a href="assets/refs/{x['ref']}_anime_base.png" download>{E(who)} 기준 전신 그림</a>을 내려받아 첨부합니다. ③ A를 건너뛰고 B만 해 보려면 <a href="assets/img/{ak}.webp" download>A 결과 그림</a>을 내려받아 첨부하고 B 문장만 보냅니다.</div>
+<h4>1 · A 프롬프트 — 이 페이지 그림을 실제로 만든 요청문 그대로</h4>
+<div class="promptbox"><pre id="{pid}a">{E(ap)}</pre><button type="button" class="btn mk-copy" data-for="{pid}a">복사하기</button></div>
+<h4>2 · B 문장 — 같은 대화에 이어서, 원리 하나만 바꾸기</h4>
+<div class="promptbox"><pre id="{pid}b">{E(x['b'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}b">복사하기</button></div>
+<h4>3 · 예상 결과</h4><ol>{ex}</ol>
+<div class="pair"><div>{art(ak, "A 결과 — " + x['title'], ar, "A 결과(실제로 만든 그림)")}</div><div>{art(x['b_key'], "B 결과 — " + x['title'], ar, "B 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>
+<h4>4 · 결과에서 확인할 것</h4><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{ck}</ul><p class="hint"><span class="pl-score">0 / 3</span></p>
+<div class="box"><b>주의할 점</b> — {E(x['caution'])} 한 번의 요청에 여러 변화를 넣지 않습니다. 차이가 약하면 새 대화에서 A부터 다시 만들어 봅니다.</div></div>
+"""
+
 def prompt_section(P):
     L = PL[P["no"]]; no = P["no"]
     who = PCHAR[L["model"]][0]
@@ -302,6 +325,10 @@ def prompt_section(P):
     return f"""<section id="prompt"><div class="wrap"><span class="roomno">{no}부 · 프롬프트 실습</span><h2>프롬프트로 직접 만들어 보기 — {E(who)}</h2>
 {talk([("doctor", "e07", "배운 다섯 단계를 이제 말로 적어 이미지 AI에게 맡겨 보자. 원리를 적은 요청문과 안 적은 요청문은 결과가 다르다."), ("jupanbot", "e16", "'걸작, 아주 자세하게'만 쓰면 다 됩니다!"), ("fruitfly", "e09", "접점과 광원을 적지 않으면 AI도 아무 데나 주름을 넣지 않을까?")])}
 <div class="box"><b>순서</b> — ① 아래에서 넣을 원리를 고릅니다. ② 완성된 요청문을 복사해 이미지 AI(이 시리즈는 Genspark)에 붙여 넣고, 같은 인물로 나오게 기초편의 {E(who)} 기준 전신 그림을 함께 올립니다. ③ 나온 그림을 점검표로 확인합니다. ④ 틀린 곳은 고치기 문장으로 <b>한 번에 하나씩</b> 고칩니다.</div>
+<h3>실습 두 가지 — A로 만들고, B로 원리 하나만 바꾸기</h3>
+<p class="muted">각 실습은 이 페이지 그림을 실제로 만든 요청문(A)에서 출발해, 원리 하나만 바꾼 문장(B)을 같은 대화에 이어 붙입니다. A와 B를 나란히 놓고 무엇이 달라졌는지 확인하는 것이 목표입니다.</p>
+{"".join(mk_block(no, i + 1, x) for i, x in enumerate(EX[no]))}
+<h3>내 요청문 조립하기 — 원리를 골라 새로 만들기</h3>
 <div class="panel plab" data-head="{E(head)}" data-tail="{E(PNEG)}"><div class="ph"><b>요청문 조립</b><small>체크한 원리만 들어갑니다</small></div>
 <div class="ctrl">{sel}{chks}</div>
 <div class="promptbox"><b>완성된 요청문 (영어 — 이 시리즈 그림은 영어 요청문으로 만들었습니다)</b><pre class="pl-out" aria-live="polite"></pre><button type="button" class="btn pl-copy">복사하기</button> <span class="hint pl-n"></span></div>
@@ -368,7 +395,7 @@ def build_index():
 <li><b>처음부터 차례로</b>(권장): 부마다 실험을 눌러 보며 20~30분, 전체 2~3시간입니다.</li>
 <li><b>기초편을 아직 안 봤다면</b>: 낱말이 낯설 때마다 <a href="{BASE}">기초편</a>의 2부(빛과 그림자)·3부(옷 주름)를 곁에 열어 두세요.</li>
 <li><b>손으로 연습하려면</b>: 각 단계의 순서를 따라 원서의 연습 선화나 직접 찍은 사진 위에 그려 보세요. 마지막 5부 '숙제 책상'이 순서 점검표입니다.</li>
-<li>각 부의 <b>프롬프트로 직접 만들어 보기</b>에서 그 부의 원리를 골라 요청문을 조립하고, 이미지 AI로 실제 그림을 만들어 점검표로 확인합니다.</li>
+<li>각 부의 <b>프롬프트로 직접 만들어 보기</b>에는 실습이 두 개씩 있습니다. 이 페이지 그림을 실제로 만든 요청문(A)으로 그림을 만들고, 원리 하나만 바꾼 문장(B)을 이어 붙여 무엇이 달라지는지 확인합니다. 원리를 골라 내 요청문을 조립하는 상자도 있습니다.</li>
 <li>각 부 끝의 <b>평가단 채점</b>은 이야기 속 예시 점수입니다. 확인 퀴즈와 실전 연습장 미션으로 스스로 점검하세요.</li></ul></div></div></section>
 <section id="parts"><div class="wrap"><h2>편 목록</h2>
 <p class="muted">모델은 하루·시아·모아, 화가는 주판봇과 초파리, 평가단은 X1·X2·X3, 해설은 박사입니다. 부마다 두 화가가 겨루고 평가단이 점수를 매깁니다.</p>
@@ -379,7 +406,7 @@ def build_index():
 <a class="card" href="04_light_dir.html">{face("haru","e19")}<span class="n">4부 · 모델 셋 모두</span><h3>광원 방향</h3><p>위·아래·옆·뒤 조명, 위에서 본 각도, 노멀 지도로 다시 조명.</p></a>
 <a class="card" href="practice/index.html">{face("x2","e16")}<span class="n">5부 · 마지막 장</span><h3>실전 연습장</h3><p>접점 탐정·프릴 공방·조명실·숙제 책상을 직접 운영합니다.</p></a>
 </div></div></section>
-<section id="map"><div class="wrap"><h2>다섯 부는 이렇게 이어집니다</h2>{flow_strip()}
+<section id="map"><div class="wrap"><h2>전체 흐름 — 1부부터 5부까지 이어지는 순서</h2>{flow_strip()}
 <div class="tbl" style="margin-top:16px"><table><thead><tr><th>부</th><th>제목</th><th>이 부를 배우는 까닭</th><th>배우는 것</th></tr></thead><tbody>
 {''.join(f"<tr><td>{n}</td><td>{E(t)}</td><td>{E(a)}</td><td>{E(b)}</td></tr>" for n, t, a, b in FLOW)}</tbody></table></div>
 <div class="box" style="margin-top:16px"><b>어느 부에서나 같은 그리기 순서</b> — ① 광원 확인 → ② 접점 찍기 → ③ 큰 주름(관절·꼭대기·만든 주름) → ④ 큰 형체 그림자 → ⑤ 주름·단차 그림자 → ⑥ 떨어지는 그림자의 주인 확인. 4부에서 광원이 바뀌어도 ②~⑥은 그대로입니다.</div>

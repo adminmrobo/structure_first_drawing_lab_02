@@ -1,0 +1,9 @@
+order,conversation,file,page,part,ratio,style,attach,status
+1,G01,mk1_1_haru_arm_down,01_standing.html,1부 실습 1-1,2:3,anime,attach/p1_haru_arm_up.png,
+2,G01,mk1_2_haru_light_right,01_standing.html,1부 실습 1-2,2:3,anime,attach/pr1_haru_guided.png,
+3,G02,mk2_1_sia_shallow_frills,02_frills.html,2부 실습 2-1,2:3,anime,attach/p2_sia_frill_made.png,
+4,G02,mk2_2_sia_tight_waist,02_frills.html,2부 실습 2-2,2:3,anime,attach/pr2_sia_guided.png,
+5,G03,mk3_1_moa_legs_out,03_sitting.html,3부 실습 3-1,4:3,anime,attach/p3_moa_sitting_joints.png,
+6,G03,mk3_2_moa_unbuttoned,03_sitting.html,3부 실습 3-2,4:3,anime,attach/pr3_moa_guided.png,
+7,G04,mk4_1_sia_top_light,04_light_dir.html,4부 실습 4-1,2:3,anime,attach/p4_sia_below_light.png,
+8,G04,mk4_2_moa_front_left,04_light_dir.html,4부 실습 4-2,2:3,anime,attach/p4_moa_side_light.png,

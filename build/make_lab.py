@@ -1,0 +1,112 @@
+# -*- coding: utf-8 -*-
+"""부마다 '프롬프트 실습' 2개 — A(이 페이지 그림을 실제로 만든 프롬프트와 그 결과) → B(원리 하나만 바꾸는 문장과 그 결과).
+a_src: ("body", 그림 키) = prompt_data.BODYS로 만든 본문 그림, ("pair", 부 번호) = prompt_lab의 원리를 넣은 요청문으로 만든 비교 그림.
+b_key: Genspark로 받을 B 결과 그림(docs/image_requests_make/). 오기 전에는 '예상 결과' 글과 '그림 준비 중' 자리를 보인다."""
+from prompt_data import BODY, NEG, ARW, BODYS
+from prompt_lab import PL, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
+
+RATIO_OF = {"p1_haru_arm_up": "2:3", "p2_sia_frill_made": "2:3", "p3_moa_sitting_joints": "4:3", "p4_sia_below_light": "2:3", "p4_moa_side_light": "2:3"}
+
+def a_prompt(src):
+    kind, v = src
+    if kind == "body":
+        ch, sc = BODYS[v]
+        return "\n".join([f"Character illustration, {RATIO_OF[v]}.", BODY, "Character: " + ch, sc, ARW, NEG])
+    L = PL[v]; lights = [L["lights"][2][2]] if L.get("lights") else []
+    frags = [f for ko, st, f in L["frags"] if "다시 조명" not in ko]
+    return "\n".join([L["pose"], PSTYLE, PCHAR[L["model"]][1]] + lights + frags + [PNEG])
+
+def a_key(src):
+    return src[1] if src[0] == "body" else PL[src[1]]["pair"][1]
+
+KEEP = "Keep the same character, outfit, framing and art style. Still no text."
+EX = {
+ 1: [
+  dict(id="x1", title="손을 내리면 주름 방향이 바뀐다", model="haru", ref="haru",
+       goal="접점이 바뀌면 주름의 출발점과 방향이 함께 바뀌는지 직접 확인합니다. 하루가 머리를 만지던 손을 내리게 해 겨드랑이 접점을 없앱니다.",
+       steps=[("s1", "1단계 접점"), ("s3", "3단계 꼭대기")], a=("body", "p1_haru_arm_up"),
+       b_key="mk1_1_haru_arm_down",
+       b="Same image. Change only: she lowers the raised hand and lets that arm hang relaxed at her side, so the armpit no longer lifts the hoodie. " + KEEP,
+       expect=["겨드랑이에서 가슴 꼭대기로 비스듬히 오르던 당김 주름이 사라지거나 크게 줄어듭니다.",
+               "후드 앞판은 어깨 꼭대기에 걸려 아래로 처지는 주름 몇 개만 남고, 밑단이 조금 내려옵니다.",
+               "바지 주름은 거의 그대로입니다. 바뀐 접점은 팔 하나뿐이기 때문입니다."],
+       checks=[("팔을 내린 쪽 후드에서 비스듬한 당김 주름이 줄었나", "#s1"), ("남은 주름이 어깨 꼭대기에서 아래로 처지나", "#s3"), ("얼굴·머리(번 2개·남색 줄)와 자세의 나머지가 그대로인가", "#s1")],
+       caution="빨간 화살표가 그려진 A 그림을 고치면 화살표도 남을 수 있습니다. 화살표가 거슬리면 'remove all red arrows and circles'를 덧붙여 따로 한 번 더 요청합니다."),
+  dict(id="x2", title="광원을 오른쪽으로 옮기면 큰 그림자가 반대로 간다", model="haru", ref="haru",
+       goal="4단계 '큰 형체 그림자 먼저'를 시험합니다. 같은 그림에서 광원만 왼쪽 위에서 오른쪽 위로 옮겨, 몸 전체의 큰 그림자가 반대쪽으로 넘어가는지 봅니다.",
+       steps=[("s4", "4단계 큰 형체 그림자"), ("s5", "5단계 단차 그림자")], a=("pair", 1),
+       b_key="mk1_2_haru_light_right",
+       b="Same image. Change only the lighting: one light source from the upper RIGHT. Move the big form shadows to the left side of her body (the chest as a sphere, the legs as cylinders), keep thin shadow bands under the pocket and the hem. " + KEEP,
+       expect=["몸의 큰 그림자가 오른쪽 절반에서 왼쪽 절반으로 넘어갑니다. 가슴은 구처럼, 다리는 원기둥처럼 한쪽이 한 덩어리로 어둡습니다.",
+               "주머니·밑단 아래의 얇은 그림자 띠는 광원이 위에 있으니 그대로 아래쪽에 남습니다.",
+               "선(윤곽·주름 선)은 바뀌지 않고 그림자만 바뀌는 것이 정상입니다."],
+       checks=[("큰 그림자가 몸의 왼쪽 절반에 한 덩어리로 있나", "#s4"), ("주머니·밑단 아래 띠가 여전히 아래쪽에 있나", "#s5"), ("얼굴의 그림자도 같은 쪽(왼쪽)인가", "#s4")],
+       caution="A 결과는 실험복을 입고 나왔습니다(이 절 아래 '실제로 나온 결과' 참고). B에서도 옷은 그대로 둡니다. 옷을 바꾸려면 따로 한 번 요청합니다."),
+ ],
+ 2: [
+  dict(id="x1", title="개더 비율을 줄이면 프릴이 얕아진다", model="sia", ref="sia",
+       goal="1단계 '물결 하나에 든 천 = 폭 × 비율'을 시험합니다. 같은 옷에서 프릴 천만 덜 넣어(비율 약 1.2) 물결 깊이가 얕아지는지 봅니다.",
+       steps=[("s1", "1단계 개더 비율"), ("s3", "3단계 큰 선 먼저")], a=("body", "p2_sia_frill_made"),
+       b_key="mk2_1_sia_shallow_frills",
+       b="Same image. Change only: the apron and petticoat ruffles are gathered much less, about 1.2 times the band length, so the ruffles become shallow gentle waves with the same number of waves. " + KEEP,
+       expect=["앞치마 밑단과 속치마 프릴의 물결이 얕고 넓적해집니다. 물결 개수는 거의 그대로입니다.",
+               "치마 전체의 종 모양 윤곽(큰 선)은 바뀌지 않습니다. 잔물결만 바뀌기 때문입니다.",
+               "프릴 아래의 그림자도 얕아져 덜 진해집니다."],
+       checks=[("물결 깊이만 얕아지고 개수는 비슷한가", "#s1"), ("치마 전체 윤곽은 그대로인가", "#s3"), ("머리 장식이 생기지 않았나(시아 고정값)", "#s1")],
+       caution="도구가 '얕게'를 '프릴을 없애라'로 알아듣는 일이 있습니다. 프릴이 사라지면 'keep the ruffles, only shallower'를 덧붙입니다."),
+  dict(id="x2", title="허리끈을 세게 조이면 위아래에서 주름이 모인다", model="sia", ref="sia",
+       goal="2단계 '조인 선을 향해 위아래 양쪽에서 모인다'를 시험합니다. 허리끈만 세게 조여 끈 위 상의와 끈 아래 치마 양쪽에 짧은 모임 주름이 생기는지 봅니다.",
+       steps=[("s2", "2단계 조임"), ("s4", "4단계 짝 장식")], a=("pair", 2),
+       b_key="mk2_2_sia_tight_waist",
+       b="Same image. Change only: the apron waist tie is pulled much tighter, so short gathered folds bunch toward the tie from above (on the bodice) and from below (on the skirt). " + KEEP,
+       expect=["허리끈 바로 위 상의에 끈 쪽으로 모이는 짧은 주름이 생깁니다.",
+               "끈 바로 아래 치마와 앞치마에도 위로 모이는 주름이 생기고, 그 아래로 천이 조금 더 부풀어 보입니다.",
+               "어깨 프릴·단추 같은 짝 장식의 높이는 바뀌지 않습니다."],
+       checks=[("끈 위쪽 상의에도 모임 주름이 생겼나", "#s2"), ("끈 아래쪽 치마에 위로 모이는 주름이 있나", "#s2"), ("짝 장식의 높이와 좌우가 그대로인가", "#s4")],
+       caution="'tighter'만 쓰면 허리를 지나치게 가늘게 그리는 일이 있습니다. 체형이 바뀌면 'keep the same body shape'를 덧붙입니다."),
+ ],
+ 3: [
+  dict(id="x1", title="다리를 펴면 무릎 주름이 줄어든다", model="moa", ref="moa",
+       goal="1단계 '관절의 남는 천 = 두께 × 굽힌 각'을 시험합니다. 옆으로 접었던 다리를 앞으로 펴게 해, 무릎·고관절의 모임 주름이 줄어드는지 봅니다.",
+       steps=[("s1", "1단계 관절"), ("s4", "4단계 주름치마")], a=("body", "p3_moa_sitting_joints"),
+       b_key="mk3_1_moa_legs_out",
+       b="Same image. Change only: still sitting on the same mat, she stretches both legs straight out in front of her, so the knees are almost straight; adjust only the legs, the skirt and the socks. " + KEEP,
+       expect=["무릎 뒤와 무릎 위의 모임 주름이 거의 사라집니다. 무릎을 거의 폈으니(약 10°) 남는 천이 3cm도 안 됩니다.",
+               "고관절은 여전히 약 90° 굽어 있어 허벅지 위쪽 주름은 남습니다.",
+               "주름치마는 바닥으로 덜 퍼지고 허벅지 위에 얹혀 주름 폭이 좁아집니다."],
+       checks=[("무릎 둘레 주름이 A보다 줄었나", "#s1"), ("허벅지 위쪽(고관절) 주름은 남아 있나", "#s1"), ("치마 주름 폭이 A보다 좁아졌나", "#s4")],
+       caution="자세를 바꾸는 요청은 구도가 흔들리기 쉽습니다. 얼굴 위치가 크게 바뀌면 'keep the same framing and camera angle'을 덧붙입니다."),
+  dict(id="x2", title="단추를 풀면 단추에서 퍼지던 주름이 사라진다", model="moa", ref="moa",
+       goal="2단계 '고정 주름 — 단추가 붙잡은 점에서 퍼진다'를 시험합니다. 앞단추만 풀어 앞판을 열면 단추 둘레 당김 주름이 사라지는지 봅니다.",
+       steps=[("s2", "2단계 단추"), ("s3", "3단계 소재")], a=("pair", 3),
+       b_key="mk3_2_moa_unbuttoned",
+       b="Same image. Change only: all front buttons of her top are unfastened and the two front panels hang open loosely, showing the white shirt underneath. " + KEEP,
+       expect=["단추를 중심으로 옆구리 쪽으로 퍼지던 짧은 당김 주름이 사라집니다.",
+               "앞판 두 장이 따로 늘어지며 세로로 처지는 주름 몇 개가 생깁니다.",
+               "안에 입은 셔츠가 드러나고, 셔츠는 부드러운 천이라 잔주름이 보입니다."],
+       checks=[("단추 둘레의 퍼지는 주름이 사라졌나", "#s2"), ("앞판이 세로로 처지는가", "#s2"), ("셔츠는 겉옷보다 잔주름이 많은가", "#s3")],
+       caution="A 결과는 블레이저가 아니라 니트 카디건으로 나왔습니다. 카디건도 단추로 앞판을 붙잡는 원리는 같아서 이 실습에는 그대로 씁니다."),
+ ],
+ 4: [
+  dict(id="x1", title="바닥 조명을 머리 위로 옮기면 밝은 면이 뒤집힌다", model="sia", ref="sia",
+       goal="2단계 '아래에서 오는 빛 — 평소와 반대'를 거꾸로 시험합니다. 아래 조명을 받은 시아의 광원만 머리 위로 옮겨, 밝은 면과 어두운 면이 위아래로 뒤집히는지 봅니다.",
+       steps=[("s1", "1단계 광원 방향"), ("s2", "2단계 아래 빛")], a=("body", "p4_sia_below_light"),
+       b_key="mk4_1_sia_top_light",
+       b="Same image. Change only the lighting: remove the lamp on the floor and use one light source directly above her head. The tops of the head and shoulders become bright, the underside of the chin and the arms go into shadow, and her cast shadow falls on the floor at her feet instead of rising on the wall. " + KEEP,
+       expect=["턱 아래·팔 아래가 어두워지고, 머리 위·어깨 위가 밝아집니다. A와 밝고 어두운 곳이 정확히 반대입니다.",
+               "벽 위로 길게 솟던 그림자가 사라지고, 발밑 바닥에 짧은 그림자가 생깁니다.",
+               "분위기가 신비로운 느낌에서 평범한 낮 느낌으로 바뀝니다."],
+       checks=[("턱 아래가 어두워졌나", "#s2"), ("어깨 위·머리 위가 밝아졌나", "#s1"), ("그림자가 벽이 아니라 발밑으로 갔나", "#s1")],
+       caution="원래 그림의 빛이 조금 남으면 광원이 두 개처럼 보입니다(5단계 다시 조명). 남으면 'remove all lighting from the floor lamp'를 덧붙입니다."),
+  dict(id="x2", title="옆 빛을 왼쪽 앞 60°로 옮기면 밝은 폭이 늘어난다", model="moa", ref="moa",
+       goal="4단계 '보이는 밝은 폭 = (1 + cos φ) ÷ 2'를 시험합니다. 오른쪽 바로 옆(φ = 90°, 밝은 폭 50%)에서 오던 빛을 왼쪽 앞 60°(밝은 폭 75%)로 옮깁니다.",
+       steps=[("s3", "3단계 옆 빛"), ("s4", "4단계 각도")], a=("body", "p4_moa_side_light"),
+       b_key="mk4_2_moa_front_left",
+       b="Same image. Change only the lighting: one light source from her front-left at about 60 degrees seen from above, slightly high. About three quarters of her visible body is lit and only the far right quarter is in shadow; the raised forearm and the bag cast shadows onto her torso shifted to the right. Remove the red and blue outline marks. " + KEEP,
+       expect=["몸의 절반이던 그림자가 오른쪽 4분의 1 정도로 줄어듭니다(50% → 75%가 밝음).",
+               "그림자가 몸의 왼쪽에서 오른쪽으로 넘어갑니다. 광원이 오른쪽에서 왼쪽으로 옮겨 갔기 때문입니다.",
+               "팔·가방이 몸통에 드리우는 그림자는 오른쪽으로 밀립니다."],
+       checks=[("밝은 부분이 몸의 4분의 3쯤인가", "#s4"), ("그림자가 오른쪽으로 넘어갔나", "#s3"), ("팔·가방 그림자가 몸통에 오른쪽으로 밀려 있나", "#s3")],
+       caution="'4분의 3'처럼 넓이를 숫자로 적어도 한 번에 잘 지켜지지 않습니다(위 '실제로 나온 결과' 참고). 넓이가 맞지 않으면 그것 하나만 고치기 문장으로 다시 요청합니다."),
+ ],
+}
