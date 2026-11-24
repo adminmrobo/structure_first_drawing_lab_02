@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
-from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY, RETRY_SEEN, RETRY_LESSON, RETRY3
+from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY, RETRY_SEEN, RETRY_LESSON, RETRY3, RETRY3_SEEN
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -316,7 +316,13 @@ def retry3_box(no, x, ar):
 <div class="promptbox"><b>부분 수정용 문장</b><pre id="{pid}">{E(r['prompt'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}">복사하기</button></div>
 <details class="promptbox"><summary>부분 수정 기능이 없을 때 — 그림 전체 편집용 문장</summary><pre id="{pid}w">{E(r['whole'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}w">복사하기</button></details>
 <div class="promptbox"><b>그래도 약하면 같은 대화에서 한 줄 더</b><pre id="{pid}m">{E(r['more'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}m">복사하기</button></div>
-<div class="pair"><div>{art(r2, "2차 결과 — " + x['title'], ar, "2차 결과(일부, 그대로 둠)")}</div><div>{art(r['key'], "3차 결과 — " + x['title'], ar, "3차 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div></div>"""
+<div class="pair"><div>{art(r2, "2차 결과 — " + x['title'], ar, "2차 결과(일부, 그대로 둠)")}</div><div>{art(r['key'], "3차 결과 — " + x['title'], ar, "3차 결과" + ("(실제로 만든 그림, 부분 수정)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>{seen3(no, x, got)}</div>"""
+
+def seen3(no, x, got):
+    if not got or (no, x["id"]) not in RETRY3_SEEN:
+        return ""
+    v, lines = RETRY3_SEEN[(no, x["id"])]
+    return f'<div class="box"><b>3차 결과 — <span style="color:var(--orange)">{E(v)}</span></b> <small class="muted">(1차: {E(SEEN[(no, x["id"])][0])} · 2차: {E(RETRY_SEEN[(no, x["id"])][0])})</small><ul style="margin:6px 0 0;padding-left:20px">' + "".join(f"<li>{E(t)}</li>" for t in lines) + "</ul></div>"
 
 def retry_seen(no, x, got):
     if not got or (no, x["id"]) not in RETRY_SEEN:

@@ -171,7 +171,7 @@ RETRY_SEEN = {
  (4, "x2"): ("대체로 예상대로", ["몸 전체가 어두워졌던 1차와 달리, 그림 왼쪽부터 대부분이 밝고 오른쪽 소매·옆선에 좁은 그림자 띠가 생겼습니다. 좌우를 '그림 기준'으로 적은 것이 효과가 있었습니다.",
                               "다만 그림자 띠가 연해서 '4분의 1'이 또렷하게 보이지는 않습니다. 팔·가방이 몸통에 드리우는 그림자도 약합니다."]),
 }
-RETRY_LESSON = "다시 시도에서 배운 점 — ① 숫자(비율·넓이)보다 모양을 말로 적는다. ② 그림자는 '광원을 옮겨라'보다 '어디를 얼마나 어둡게'를 적는다. ③ 원래 그림의 빛을 먼저 지우게 한다. ④ 좁은 부위의 작은 주름은 두 번째 시도에서도 약하니, 부분 수정을 쓰고 결과를 확대해 흔적을 확인한다."
+RETRY_LESSON = "다시 시도에서 배운 점 — ① 숫자(비율·넓이)보다 모양을 말로 적는다. ② 그림자는 '광원을 옮겨라'보다 '어디를 얼마나 어둡게'를 적는다. ③ 원래 그림의 빛을 먼저 지우게 한다. ④ 좁은 부위의 작은 주름은 세 번째 부분 수정에서도 약했다(실습 2-2). 특히 검은 천의 주름은 밝은 하이라이트로 그려야 보인다. 이런 곳은 AI 결과를 밑그림으로 쓰고 마지막 주름은 손으로 더한다."
 
 # 한 번 더(3차) — 2차에서도 일부만 된 실습
 RETRY3 = {
@@ -185,4 +185,10 @@ RETRY3 = {
           "above the tie (on the black bodice) and below it (on the white apron and black skirt), all converging on the tie, with small dark shadows between them. "
           "The waist width stays the same. Keep the same character, outfit, pose, framing and art style. Still no text."),
    more="The gathered folds are still too faint. Make each fold darker and longer, clearly converging on the tie from above and from below, like a tightly pulled drawstring pouch."),
+}
+
+RETRY3_SEEN = {
+ (2, "x2"): ("일부", ["얼룩·번짐은 없어졌습니다. 허리띠에 끈이 당기는 사선 주름이 생겼고, 끈 아래 앞치마의 모임 주름이 끈 쪽으로 모입니다.",
+                   "끈 위 검은 상의에는 끈 쪽으로 내려오는 주름이 여전히 보이지 않습니다. 검은 천은 어두운 주름 선이 바탕에 묻히기 때문입니다. 검은 천의 주름은 밝은 회색 하이라이트로 그려야 보입니다.",
+                   "세 번 시도한 결과, 좁은 부위의 작은 주름은 이미지 AI가 가장 약한 곳입니다. 이런 곳은 AI 결과를 밑그림으로 쓰고, 마지막 주름 몇 줄은 손으로 더하는 편이 빠릅니다."]),
 }
