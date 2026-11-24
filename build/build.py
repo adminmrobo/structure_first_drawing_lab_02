@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
-from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY
+from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON, RETRY, RETRY_SEEN, RETRY_LESSON
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -303,7 +303,14 @@ def retry_box(no, x, ar):
 <p class="hint">새 대화를 열고 <a href="assets/img/{r['attach']}.webp" download>이 그림</a>을 첨부한 뒤 아래 문장을 보냅니다. 부분 수정 기능이 있으면 바꿀 곳만 칠하고 보냅니다.</p>
 <div class="promptbox"><pre id="{pid}">{E(r['prompt'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}">복사하기</button></div>
 <div class="promptbox"><b>그래도 약하면 같은 대화에서 한 줄 더</b><pre id="{pid}m">{E(r['more'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}m">복사하기</button></div>
-<div class="pair"><div>{art(x['b_key'], "1차 결과 — " + x['title'], ar, "1차 결과(실패, 그대로 둠)")}</div><div>{art(r['key'], "2차 결과 — " + x['title'], ar, "2차 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div></div>"""
+<div class="pair"><div>{art(x['b_key'], "1차 결과 — " + x['title'], ar, "1차 결과(실패, 그대로 둠)")}</div><div>{art(r['key'], "2차 결과 — " + x['title'], ar, "2차 결과" + ("(실제로 만든 그림, 새 대화에서 한 번)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>{retry_seen(no, x, got)}</div>"""
+
+def retry_seen(no, x, got):
+    if not got or (no, x["id"]) not in RETRY_SEEN:
+        return ""
+    v, lines = RETRY_SEEN[(no, x["id"])]
+    col = "var(--green)" if "예상대로" in v else "var(--orange)"
+    return f'<div class="box"><b>2차 결과 — <span style="color:{col}">{E(v)}</span></b> <small class="muted">(1차: {E(SEEN[(no, x["id"])][0])})</small><ul style="margin:6px 0 0;padding-left:20px">' + "".join(f"<li>{E(t)}</li>" for t in lines) + "</ul></div>"
 
 def mk_block(no, k, x):
     who = PCHAR[x["model"]][0]; ak = a_key(x["a"]); ap = a_prompt(x["a"])
@@ -346,7 +353,7 @@ def prompt_section(P):
 <div class="box"><b>순서</b> — ① 아래에서 넣을 원리를 고릅니다. ② 완성된 요청문을 복사해 이미지 AI(이 시리즈는 Genspark)에 붙여 넣고, 같은 인물로 나오게 기초편의 {E(who)} 기준 전신 그림을 함께 올립니다. ③ 나온 그림을 점검표로 확인합니다. ④ 틀린 곳은 고치기 문장으로 <b>한 번에 하나씩</b> 고칩니다.</div>
 <h3>실습 두 가지 — A로 만들고, B로 원리 하나만 바꾸기</h3>
 <p class="muted">각 실습은 이 페이지 그림을 실제로 만든 요청문(A)에서 출발해, 원리 하나만 바꾼 문장(B)을 같은 대화에 이어 붙입니다. A와 B를 나란히 놓고 무엇이 달라졌는지 확인하는 것이 목표입니다.</p>
-{"".join(mk_block(no, i + 1, x) for i, x in enumerate(EX[no]))}<div class="box"><b>여덟 실습을 모아 보면</b> — {E(MK_LESSON)}</div>
+{"".join(mk_block(no, i + 1, x) for i, x in enumerate(EX[no]))}<div class="box"><b>여덟 실습을 모아 보면</b> — {E(MK_LESSON)}<p style="margin:8px 0 0">{E(RETRY_LESSON)}</p></div>
 <h3>내 요청문 조립하기 — 원리를 골라 새로 만들기</h3>
 <div class="panel plab" data-head="{E(head)}" data-tail="{E(PNEG)}"><div class="ph"><b>요청문 조립</b><small>체크한 원리만 들어갑니다</small></div>
 <div class="ctrl">{sel}{chks}</div>
