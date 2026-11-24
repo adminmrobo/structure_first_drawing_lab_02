@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from content_a import P1, P2
 from content_b import P3, P4
 from prompt_lab import PL, PAIR_NOTE, PAIR_SEEN, PAIR_LESSON, STYLE as PSTYLE, NEG as PNEG, CHAR as PCHAR
-from make_lab import EX, a_prompt, a_key
+from make_lab import EX, a_prompt, a_key, SEEN, MK_LESSON
 from prompt_data import BODY as DBODY, NEG as DNEG, ARW as DARW, HARU as DHARU, SIA as DSIA, MOA as DMOA, BODYS as DBODYS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -286,6 +286,13 @@ def footer(pre=""):
 </body></html>
 """
 
+def seen_box(no, x):
+    if (no, x["id"]) not in SEEN or not has_img(x["b_key"]):
+        return ""
+    v, lines = SEEN[(no, x["id"])]
+    col = {"예상대로": "var(--green)", "일부": "var(--orange)"}.get(v, "var(--red)")
+    return f'<div class="box"><b>4 · 실제 결과 — <span style="color:{col}">{E(v)}</span></b><ul style="margin:6px 0 0;padding-left:20px">' + "".join(f"<li>{E(t)}</li>" for t in lines) + "</ul></div>"
+
 def mk_block(no, k, x):
     who = PCHAR[x["model"]][0]; ak = a_key(x["a"]); ap = a_prompt(x["a"])
     ar = "4/3" if no == 3 and x["id"] == "x1" else ("4/3" if ak.startswith("pr3") else "2/3")
@@ -301,9 +308,9 @@ def mk_block(no, k, x):
 <div class="promptbox"><pre id="{pid}a">{E(ap)}</pre><button type="button" class="btn mk-copy" data-for="{pid}a">복사하기</button></div>
 <h4>2 · B 문장 — 같은 대화에 이어서, 원리 하나만 바꾸기</h4>
 <div class="promptbox"><pre id="{pid}b">{E(x['b'])}</pre><button type="button" class="btn mk-copy" data-for="{pid}b">복사하기</button></div>
-<h4>3 · 예상 결과</h4><ol>{ex}</ol>
-<div class="pair"><div>{art(ak, "A 결과 — " + x['title'], ar, "A 결과(실제로 만든 그림)")}</div><div>{art(x['b_key'], "B 결과 — " + x['title'], ar, "B 결과" + ("(실제로 만든 그림)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>
-<h4>4 · 결과에서 확인할 것</h4><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{ck}</ul><p class="hint"><span class="pl-score">0 / 3</span></p>
+<h4>3 · 예상 결과 — 이렇게 바뀌면 성공</h4><ol>{ex}</ol>
+<div class="pair"><div>{art(ak, "A 결과 — " + x['title'], ar, "A 결과(실제로 만든 그림)")}</div><div>{art(x['b_key'], "B 결과 — " + x['title'], ar, "B 결과" + ("(실제로 만든 그림, 같은 대화에서 B 문장 한 번)" if got else " — 그림을 받으면 실제 결과로 바뀝니다"))}</div></div>
+{seen_box(no, x)}<h4>5 · 결과에서 확인할 것</h4><ul class="pl-list" style="list-style:none;padding-left:0;margin:0">{ck}</ul><p class="hint"><span class="pl-score">0 / 3</span></p>
 <div class="box"><b>주의할 점</b> — {E(x['caution'])} 한 번의 요청에 여러 변화를 넣지 않습니다. 차이가 약하면 새 대화에서 A부터 다시 만들어 봅니다.</div></div>
 """
 
@@ -327,7 +334,7 @@ def prompt_section(P):
 <div class="box"><b>순서</b> — ① 아래에서 넣을 원리를 고릅니다. ② 완성된 요청문을 복사해 이미지 AI(이 시리즈는 Genspark)에 붙여 넣고, 같은 인물로 나오게 기초편의 {E(who)} 기준 전신 그림을 함께 올립니다. ③ 나온 그림을 점검표로 확인합니다. ④ 틀린 곳은 고치기 문장으로 <b>한 번에 하나씩</b> 고칩니다.</div>
 <h3>실습 두 가지 — A로 만들고, B로 원리 하나만 바꾸기</h3>
 <p class="muted">각 실습은 이 페이지 그림을 실제로 만든 요청문(A)에서 출발해, 원리 하나만 바꾼 문장(B)을 같은 대화에 이어 붙입니다. A와 B를 나란히 놓고 무엇이 달라졌는지 확인하는 것이 목표입니다.</p>
-{"".join(mk_block(no, i + 1, x) for i, x in enumerate(EX[no]))}
+{"".join(mk_block(no, i + 1, x) for i, x in enumerate(EX[no]))}<div class="box"><b>여덟 실습을 모아 보면</b> — {E(MK_LESSON)}</div>
 <h3>내 요청문 조립하기 — 원리를 골라 새로 만들기</h3>
 <div class="panel plab" data-head="{E(head)}" data-tail="{E(PNEG)}"><div class="ph"><b>요청문 조립</b><small>체크한 원리만 들어갑니다</small></div>
 <div class="ctrl">{sel}{chks}</div>
