@@ -458,7 +458,7 @@ def build_index():
 <p class="muted" style="margin-top:12px">원리를 먼저 보고 싶다면: <a href="{BASE}">기초편 — 구조 먼저 보는 캐릭터 그리기 연구실(1~7부)</a></p></div></section>
 <section id="cast"><div class="wrap"><h2>등장인물</h2><div class="cast-grid">{''.join(f'<div class="who">{face(k, "e01" if k in ("haru","sia","moa") else "e13")}<b>{E(CH[k][0])}</b><span>{E(CH[k][1])}</span></div>' for k in ["doctor","haru","sia","moa","jupanbot","fruitfly","x1","x2","x3"])}</div></div></section>
 <section id="source"><div class="wrap"><h2>원리와 출처</h2>
-<p>연습의 구성(서 있는 자세 → 주름 많은 옷 → 앉은 자세 → 광원 방향별 그림자, 그리고 같은 왼쪽 광원도 각도에 따라 그림자가 다르다는 칼럼)은 다테 나오토의 작법서 『デジタルツールで描く！服のシワと影の描き方』(マイナビ) 3장 실천편과 출판사 특전 PDF를 참고했습니다. 책의 그림·사진·문장·도식은 옮기지 않았고, 연구실 캐릭터와 직접 움직이는 실험으로 새로 구성했습니다. 숫자 식(두께 × 각, 개더 비율, tan, (1 + cos φ) ÷ 2, 내적)은 원리를 보이려고 이 페이지에서 덧붙인 것입니다.</p>
+<p>연습의 구성(서 있는 자세 → 주름 많은 옷 → 앉은 자세 → 광원 방향별 그림자, 그리고 같은 왼쪽 광원도 각도에 따라 그림자가 다르다는 칼럼)은 다테 나오토의 작법서 『デジタルツールで描く！服のシワと影の描き方』(マイナビ) 3장 실천편과 출판사 특전 PDF를 참고했습니다. 숫자 식(두께 × 각, 개더 비율, tan, (1 + cos φ) ÷ 2, 내적)은 원리를 보이려고 이 페이지에서 덧붙인 것입니다.</p>
 <p>AI와의 연결(포즈·깊이 가이드, 확산 모델, 다시 조명)은 아래 출처의 논문을 바탕으로 쉽게 풀었습니다. 그림은 연구실 캐릭터로 Genspark에서 새로 만들었습니다(표지 6장은 16비트 픽셀아트, 본문 20장은 애니풍). 그림 속 빨간 화살표·동그라미는 그 단계에서 볼 곳을 가리킵니다.</p></div></section>
 """
     s += kg_block("index", [P["file"] for P in PARTS] + ["practice/index.html"])
